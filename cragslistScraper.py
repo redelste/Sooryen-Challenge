@@ -8,6 +8,10 @@ import csv
 import schedule
 import time
 
+import mysql.connector
+from mysql.connector import Error
+from mysql.connector import errorcode
+
 
 def scrape():
     '''Scrapes the craigslist web page at the given url.'''
@@ -26,15 +30,40 @@ def scrape():
         results.append(list(map(lambda x: (x.select('.result-title')[0].string, x.select('.result-price')[0].string), resultInfo)))
 
     flatten = lambda l: [item for sublist in l for item in sublist]
+    
+    records = flatten(results)
 
-    flat = flatten(results)
-    for x in range(len(flat)):
-        print(x, flat[x])
+    return records
 
 
-''' Schedules the code to run at 3AM every day. '''
-schedule.every().day.at("03:00").do(scrape)
+def sqlDB():
+    try:
+        connection = mysql.connector.connect(host='localhost',database='python_db',user='user',password='password')
 
-while 1:
-    schedule.run_pending()
-    time.sleep(1)
+        records_to_insert = scrape()
+
+        sql_insert_query = """ INSERT INTO python_users (title, price) VALUES (%s,%s) """
+
+        cursor = connection.cursor(prepared=True)
+        result = cursor.executemany(sql_insert_query, records_to_insert)
+        connection.commit()
+        print(cursor.rowcount, "records inserted successfully")
+
+    except mysql.connector.Error as error:
+        print("Failed inserting record into python_users table {}".format(error))
+
+    finally:
+        if(connection.is_connected()):
+            cursor.close()
+            connection.close()
+            print("connection is closed")
+        
+# ''' Schedules the code to run at 3AM every day. '''
+# schedule.every().day.at("03:00").do(scrape)
+
+# while 1:
+#     schedule.run_pending()
+#     time.sleep(1)
+
+
+sqlDB()
