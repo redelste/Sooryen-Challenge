@@ -2,7 +2,7 @@
 from bs4 import BeautifulSoup as bsoup
 import argparse, urllib3, certifi, sys, json, os, shutil
 import requests as rq
-import csv 
+import csv
 
 
 import schedule
@@ -24,16 +24,26 @@ def scrape():
         soup = bsoup(r.content,'html5lib') # gets the HTML content of each page
         cur_url = base_url + "&s=" + str(num)
         resultInfo = soup.findAll('p',attrs={'class':'result-info'})
-        results.append(list(map(lambda x: (x.select('.result-title')[0].string, x.select('.result-price')[0].string), resultInfo)))
+        results.append(
+                list(
+                    map(
+                        lambda x: {
+                            "title": x.select('.result-title')[0].string,
+                            "price": float(x.select('.result-price')[0].string[1:])
+                        },
+                        resultInfo
+                    )
+                )
+            )
 
     flatten = lambda l: [item for sublist in l for item in sublist]
-    
+
     records = flatten(results)
 
     return records
 
 
-        
+
 if __name__ == '__main__':
     print(scrape())
 # ''' Schedules the code to run at 3AM every day. '''
