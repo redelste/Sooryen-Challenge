@@ -8,9 +8,6 @@ import csv
 import schedule
 import time
 
-import mysql.connector
-from mysql.connector import Error
-from mysql.connector import errorcode
 
 
 def scrape():
@@ -36,28 +33,9 @@ def scrape():
     return records
 
 
-def sqlDB():
-    try:
-        connection = mysql.connector.connect(host='localhost',database='python_db',user='user',password='password')
-
-        records_to_insert = scrape()
-
-        sql_insert_query = """ INSERT INTO python_users (title, price) VALUES (%s,%s) """
-
-        cursor = connection.cursor(prepared=True)
-        result = cursor.executemany(sql_insert_query, records_to_insert)
-        connection.commit()
-        print(cursor.rowcount, "records inserted successfully")
-
-    except mysql.connector.Error as error:
-        print("Failed inserting record into python_users table {}".format(error))
-
-    finally:
-        if(connection.is_connected()):
-            cursor.close()
-            connection.close()
-            print("connection is closed")
         
+if __name__ == '__main__':
+    print(scrape())
 # ''' Schedules the code to run at 3AM every day. '''
 # schedule.every().day.at("03:00").do(scrape)
 
@@ -66,4 +44,3 @@ def sqlDB():
 #     time.sleep(1)
 
 
-sqlDB()
