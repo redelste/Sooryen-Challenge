@@ -1,8 +1,10 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from scraper import scrape
 import os
+import connexion
+
 
 # LOADING IN ENVIRONMENT VARIABLES
 load_dotenv(verbose=True)
@@ -14,6 +16,7 @@ DB_CONFIG = {
 }
 
 ENV = os.getenv('PY_ENV')
+
 
 # BOOTSTRAPPING APP WITH ENVIRONMENT VARIABLES
 def create_app(config=None):
@@ -33,6 +36,8 @@ def create_app(config=None):
     db = SQLAlchemy(app)
     return app, db
 
+
+
 # GETTING INSTANCES OF API AND DB
 app, db = create_app(DB_CONFIG)
 
@@ -50,6 +55,7 @@ class Listing(db.Model):
 
 # CONTROLLERS
 
+
 # ROOT ROUTE
 @app.route('/')
 def home():
@@ -59,8 +65,8 @@ def home():
     })
 
 # ROUTE TO VERIFY DB CONNECTION
-@app.route('/db-test')
-def dbTest():
+@app.route('/db-result', methods=['GET','POST'])
+def dbresult():
     return jsonify({
         'success': True,
         'data': list(map(lambda x: {
@@ -69,14 +75,16 @@ def dbTest():
         }, Listing.query.all()))
     })
 
+      
 def seed():
     test_data = scrape()
     for x in test_data:
         db.session.add(Listing(title=x["title"], price=x["price"]))
     db.session.commit()
 
+
 if __name__ == '__main__':
     db.create_all()
     if ENV != 'PRODUCTION':
         seed()
-    app.run()
+    app.run(debug=True)

@@ -10,8 +10,11 @@
 	cd server
 	```
 
-2. Create a `.env` file with your database configuration using `.env.sample` as a template.
+2. Create a `.env` file with your database configuration using `.env.sample` as a template. 
+	* NOTE: Switch PY_ENV to DEV if you wish to run on SQLite in memory. If you mark the PY_ENV as DEV you do not need to fill out the rest of the .env file.
+	* If you choose to switch PY_ENV to PRODUCTION to run using an AWS instance.
 
+	
 3. Create a virtual environment:
 
 	```bash
