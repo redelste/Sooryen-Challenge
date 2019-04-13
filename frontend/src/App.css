@@ -7,7 +7,9 @@
   height: 40vmin;
   pointer-events: none;
 }
-
+.container{
+  background-color: rgb(255, 255, 255);
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -21,6 +23,19 @@
 
 .App-link {
   color: #61dafb;
+}
+
+p{
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+button{
+  border-color: #61dafb;
+  border-radius: 50px;
+  margin-right: 10px;
+  margin-left: 10px;
 }
 
 @keyframes App-logo-spin {

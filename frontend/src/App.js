@@ -24,7 +24,7 @@ class App extends Component {
     if (this.state.listings[this.state.currentListing]) {
       const { title, price } = this.state.listings[this.state.currentListing]
       return (
-        <div className="App">
+        <div className="App container">
           <div>
             <div>
               <p>{title}, ${price}</p>
