@@ -24,7 +24,7 @@ pathlib==1.0.1
 pkg-resources==0.0.0
 pylint==2.3.1
 python-dotenv==0.10.1
-PyYAML==5.1
+PyYAML==5.4
 requests==2.21.0
 schedule==0.6.0
 six==1.12.0
